@@ -1,138 +1,222 @@
 # PilotWatch 🎬
 
-An interactive web application for showcasing animated pilots with a like counter, star notification system, and pilot request feature.
+An interactive web application for showcasing animated pilots with **global like counters**, star notification system, and pilot request feature.
 
-## Features
+## ✨ Features
 
-✨ **Randomized Featured Pilot** - The hero section displays a different random pilot each time you visit
+🌐 **Global Like Counters** - Likes are shared across all users via Firebase  
+⭐ **Star System** - Users can star pilots for release notifications  
+🎙️ **Pilot Requests** - Users can submit pilot suggestions (emailed to you via Formspree)  
+🎬 **Randomized Featured Pilot** - Different pilot featured each visit  
+📱 **Responsive Design** - Works on desktop, tablet, and mobile  
+🎨 **Modern UI** - Beautiful cyan/blue gradient with animations  
 
-❤️ **Like Counter** - Users can like pilots and the count is stored in browser localStorage
-
-⭐ **Star System** - Users can star pilots to get notifications when they're released
-
-🎬 **Request a Pilot** - Users can submit requests for pilots to be added to the collection
-
-🎯 **Pilot Detail Pages** - Click on any pilot to see a full description and larger video thumbnail
-
-📱 **Responsive Design** - Works perfectly on desktop, tablet, and mobile devices
-
-🎨 **Modern UI** - Beautiful gradient design with smooth animations
-
-## File Structure
+## 📁 File Structure
 
 - **index.html** - Main HTML structure
 - **styles.css** - All styling and animations
-- **script.js** - JavaScript functionality for likes, stars, requests, and navigation
-- **data.js** - Pilot data storage (this is where you add your pilots)
+- **script.js** - JavaScript functionality (likes, stars, requests)
+- **data.js** - Your pilot data storage
+- **firebase-config.js** - Firebase credentials (for global likes)
 - **README.md** - This file
 
-## How to Add Your Pilots
+## 🚀 Quick Start
 
-1. Open `data.js`
-2. Each pilot needs the following information:
-   - `id`: A unique number for each pilot
-   - `title`: The name of the pilot
-   - `description`: A detailed description of the pilot
-   - `image`: URL or path to a thumbnail image (recommended: 300x200px)
-   - `videoThumbnail`: URL or path to a larger image for the detail page (recommended: 1000x600px)
+### 1. Add Your Pilots
 
-3. Add your pilot data following this structure:
-
+Open `data.js` and add pilots with these fields:
 ```javascript
 {
     id: 1,
     title: "Your Pilot Title",
-    description: "Your pilot description here. This will appear on both the main page and detail page.",
-    image: "https://example.com/pilot-thumbnail.jpg",
-    videoThumbnail: "https://example.com/pilot-video.jpg"
+    description: "Full description here",
+    image: "https://example.com/thumbnail.jpg",
+    videoThumbnail: "https://example.com/video.jpg"
 }
 ```
 
-## How It Works
+### 2. Enable Global Likes (Firebase)
 
-### Home Page
-- **Hero Section**: A random pilot is displayed with a featured card
-- **Like Button**: Click the ❤️ to like a pilot (count increases)
-- **Star Button**: Click the ⭐ to enable notifications for that pilot
-- **Request Button**: Click the "🎬 Request a Pilot" button to submit pilot suggestions
-- **Pilot Grid**: Scroll down to see all pilots with their like counts
+**Firebase is already configured!** The global like counter should work immediately.
 
-### Request a Pilot
-- **Click the button** to open the request modal
-- **Fill in the form** with:
-  - Pilot Title (required)
-  - Studio/Creator (required)
-  - Description (required)
-  - Genre (optional)
-  - Link (IMDB, YouTube, etc. - optional)
-  - Your Name/Handle (optional)
-  - Your Email (optional)
-- **Submit** the request
-- The request is saved locally in your browser
+To verify it's working:
+1. Open your site in two different browsers or devices
+2. Click the ❤️ button on a pilot
+3. The count should increase in **both** browsers instantly! 🌐
 
-### Pilot Detail Page
-- **Click any pilot** from the grid to view its full details
-- **Full Description**: See the complete pilot description
-- **Video Thumbnail**: View a larger image representation
-- **Back Button**: Return to the home page
+**If it's not working:**
+- Check Firebase Database Rules (see below)
+- Check browser console (F12) for errors
 
-### Data Storage
-- **Likes**: Stored in browser localStorage under 'pilotLikes' and 'pilotLiked'
-- **Stars**: Stored in browser localStorage under 'pilotStarred'
-- **Requests**: Stored in browser localStorage under 'pilotRequests'
-- Data persists across browser sessions on the same device
+### 3. Set Up Pilot Requests (Formspree)
 
-## Customization
+1. Go to https://formspree.io/
+2. Sign up with your email
+3. Create a new form
+4. Copy your form ID (looks like: `xyzdefgh`)
+5. In `index.html`, line 56, replace the form action:
+   ```html
+   action="https://formspree.io/f/YOUR_FORM_ID"
+   ```
+6. Save and commit
+7. When users submit requests, you'll get emails! 📧
+
+### 4. Enable GitHub Pages
+
+1. Go to your repo Settings → Pages
+2. Select `main` branch
+3. Your site will be live at: **https://github-2050.github.io/PilotWatch/**
+
+---
+
+## 🌍 How Global Likes Work
+
+**The Like Counter Shows:**
+- 🌐 = Global count (all users combined, via Firebase)
+- 📱 = Local count (just your device, if Firebase isn't set up)
+
+**Data Flow:**
+1. User clicks ❤️ on a pilot
+2. Count increases in Firebase database
+3. All users see the same number instantly
+4. Also stored locally for fast loading
+
+**Example:**
+- User A likes "Pilot 1" → Count: 1
+- User B likes "Pilot 1" → Count: 2 (both users see this)
+- User C likes "Pilot 1" → Count: 3 (all three see this)
+
+---
+
+## ⭐ How Stars Work
+
+Stars are for **personal notifications** (stored locally):
+- Only you see your starred pilots
+- When you star a pilot, it remembers on your device
+- Each device/browser tracks stars separately
+
+**Future enhancement:** Add email notifications when starred pilots release.
+
+---
+
+## 📋 How Requests Work
+
+1. User clicks "🎬 Request a Pilot"
+2. Modal form opens with fields:
+   - Pilot Title (required)
+   - Studio/Creator (required)
+   - Description (required)
+   - Genre (optional)
+   - Link (optional)
+   - Name/Handle (optional)
+   - Email (required)
+3. User submits → Formspree receives it
+4. **You get an email** with the request ✉️
+
+---
+
+## 🔧 Customization
 
 ### Colors
-Edit the color scheme in `styles.css`. Key colors:
-- Primary: `#00d4ff` (cyan)
-- Dark background: `#0f0f0f`
-- Accent: `#0099ff` (blue)
+Edit `styles.css`:
+```css
+Primary: #00d4ff (cyan)
+Dark background: #0f0f0f
+Accent: #0099ff (blue)
+```
 
 ### Fonts
-Change font in `styles.css` body section:
+Edit `styles.css` body section:
 ```css
 font-family: 'Your Font Here', sans-serif;
 ```
 
-## Viewing Pilot Requests
+---
 
-Pilot requests are saved locally in your browser's localStorage. To view them:
+## 🔐 Firebase Database Rules
 
-1. Open your browser's Developer Tools (F12)
-2. Go to the "Application" or "Storage" tab
-3. Click on "Local Storage"
-4. Look for the entry that shows your site's URL
-5. Find the `pilotRequests` key to see all submitted requests
+To ensure global likes work properly, set these rules:
 
-The data is stored as JSON and can be exported for review.
+1. Go to: https://console.firebase.google.com/
+2. Select project "pilotwatch-7afae"
+3. Click: **Build > Realtime Database**
+4. Click: **Rules** tab
+5. Replace all content with:
 
-## Hosting on GitHub Pages
+```json
+{
+  "rules": {
+    "likes": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+```
 
-1. Make sure this repository is public
-2. Go to repository Settings → Pages
-3. Select 'main' branch as source
-4. Your site will be live at `https://github-2050.github.io/PilotWatch/`
+6. Click **Publish**
 
-## Browser Support
+This allows anyone to read and write like counts (perfect for a public app).
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers
+---
 
-## Future Enhancements
+## 🛠️ Troubleshooting
 
-To automatically create GitHub issues from pilot requests:
-1. Set up a backend server that calls the GitHub API
-2. Use GitHub Actions with form submission webhooks
-3. Integrate a third-party service like Formspree or Basin
+### Likes aren't global?
+- Check Firebase Database Rules are set (see above)
+- Check browser console (F12) for errors
+- Make sure `firebase-config.js` is loaded
 
-## License
+### Requests aren't emailing?
+- Confirm Formspree form action is updated in `index.html`
+- Sign in to Formspree to see submissions
+- Check spam folder for test emails
 
-Feel free to use and modify this project as needed!
+### Like counter stuck on local?
+- Open browser DevTools (F12)
+- Go to Application → Local Storage
+- Clear `pilotLikesGlobal` entries
+- Refresh page
+- Try clicking like again
 
-## Support
+---
 
-If you have questions about how to customize or use PilotWatch, check the inline comments in the code files.
+## 📊 View Pilot Requests
+
+Requests are handled by Formspree:
+1. Go to https://formspree.io/
+2. Log in to your account
+3. Click your form
+4. See all submissions in the dashboard
+5. Export as CSV if needed
+
+---
+
+## 🌐 Hosting
+
+Already on GitHub Pages at:
+**https://github-2050.github.io/PilotWatch/**
+
+---
+
+## 💡 Feature Ideas
+
+- [ ] Email notifications when starred pilots are released
+- [ ] User accounts to track likes across devices
+- [ ] Pilot ratings (1-5 stars)
+- [ ] Comments section
+- [ ] Share buttons for social media
+- [ ] Dark/Light mode toggle
+- [ ] Search/filter pilots by genre
+
+---
+
+## 📝 License
+
+Free to use and modify!
+
+---
+
+## 🎬 Need Help?
+
+Check the comments in the code files for detailed explanations of how each system works.
