@@ -1,3 +1,18 @@
+// ============================================
+// FIREBASE GLOBAL LIKES SYSTEM
+// ============================================
+let firebaseReady = false;
+
+// Check if Firebase is initialized
+setTimeout(() => {
+    if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+        firebaseReady = true;
+        console.log('Firebase is ready for global likes!');
+    } else {
+        console.warn('Firebase not configured. Using local storage for likes.');
+    }
+}, 1000);
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     loadPilotsData();
@@ -6,9 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
     loadLikesFromStorage();
     loadStarsFromStorage();
     setupRequestForm();
+    
+    // If Firebase is ready, sync likes from database
+    setTimeout(() => {
+        if (firebaseReady) {
+            syncLikesWithFirebase();
+        }
+    }, 2000);
 });
 
-// Modal Functions
+// ============================================
+// MODAL FUNCTIONS
+// ============================================
 function openRequestModal() {
     const modal = document.getElementById('requestModal');
     modal.classList.add('show');
@@ -27,53 +51,19 @@ window.onclick = function(event) {
     }
 }
 
-// Setup Request Form
+// ============================================
+// REQUEST FORM WITH FORMSPREE
+// ============================================
 function setupRequestForm() {
     const form = document.getElementById('requestForm');
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitPilotRequest();
+        // Let Formspree handle the submission
+        // This will submit to Formspree and send you an email
+        // The form will auto-redirect after success
     });
 }
 
-// Submit Pilot Request
-function submitPilotRequest() {
-    const title = document.getElementById('pilotTitle').value;
-    const studio = document.getElementById('pilotStudio').value;
-    const description = document.getElementById('pilotDescription').value;
-    const genre = document.getElementById('pilotGenre').value;
-    const link = document.getElementById('pilotLink').value;
-    const name = document.getElementById('requesterName').value;
-    const email = document.getElementById('requesterEmail').value;
-
-    // Create the request object
-    const request = {
-        timestamp: new Date().toISOString(),
-        title: title,
-        studio: studio,
-        description: description,
-        genre: genre,
-        link: link,
-        requesterName: name,
-        requesterEmail: email
-    };
-
-    // Save to localStorage
-    const requests = JSON.parse(localStorage.getItem('pilotRequests')) || [];
-    requests.push(request);
-    localStorage.setItem('pilotRequests', JSON.stringify(requests));
-
-    // Show success message
-    showSuccessMessage();
-
-    // Reset form
-    document.getElementById('requestForm').reset();
-
-    // Close modal
-    closeRequestModal();
-}
-
-// Show success message
+// Show success message (Formspree will redirect, but we'll add a fallback)
 function showSuccessMessage() {
     const message = document.getElementById('successMessage');
     message.classList.add('show');
@@ -83,7 +73,9 @@ function showSuccessMessage() {
     }, 4000);
 }
 
-// Display a randomized featured pilot on hero section
+// ============================================
+// FEATURED PILOT DISPLAY
+// ============================================
 function displayFeaturedPilot() {
     const randomIndex = Math.floor(Math.random() * pilots.length);
     const pilot = pilots[randomIndex];
@@ -100,7 +92,9 @@ function displayFeaturedPilot() {
     `;
 }
 
-// Display all pilots in a grid
+// ============================================
+// PILOT LIST DISPLAY WITH GLOBAL LIKES
+// ============================================
 function displayPilotsList() {
     const pilotsGrid = document.getElementById('pilotsGrid');
     pilotsGrid.innerHTML = '';
@@ -119,7 +113,10 @@ function displayPilotsList() {
                 <div class="pilot-card-footer">
                     <div class="like-counter">
                         <button class="like-btn ${liked ? 'liked' : ''}" onclick="toggleLike(${pilot.id}, this)" title="Like this pilot">❤️</button>
-                        <span id="likes-${pilot.id}">${getLikes(pilot.id)}</span>
+                        <span id="likes-${pilot.id}">
+                            <span class="like-count">${getLikes(pilot.id)}</span>
+                            <span class="like-status" style="font-size: 0.8rem; color: #999;">${firebaseReady ? '🌐' : '📱'}</span>
+                        </span>
                     </div>
                     <button class="star-btn ${starred ? 'starred' : ''}" onclick="toggleStar(${pilot.id}, this)" title="Star for notifications">⭐</button>
                 </div>
@@ -130,7 +127,9 @@ function displayPilotsList() {
     });
 }
 
-// Navigate to pilot detail page
+// ============================================
+// PILOT DETAIL PAGE
+// ============================================
 function goToPilotDetail(pilotId) {
     const pilot = pilots.find(p => p.id === pilotId);
     if (!pilot) return;
@@ -144,6 +143,8 @@ function goToPilotDetail(pilotId) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${pilot.title} - PilotWatch</title>
             <link rel="stylesheet" href="styles.css">
+            <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"><\/script>
+            <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"><\/script>
         </head>
         <body>
             <div class="pilot-detail">
@@ -160,6 +161,7 @@ function goToPilotDetail(pilotId) {
                     <button class="btn btn-secondary" onclick="toggleStarDetail(${pilot.id})">⭐ Star for Notification</button>
                 </div>
             </div>
+            <script src="firebase-config.js"><\/script>
             <script src="data.js"><\/script>
             <script src="script.js"><\/script>
             <script>
@@ -172,16 +174,119 @@ function goToPilotDetail(pilotId) {
     `;
 }
 
-// Like/Unlike toggle
-function toggleLike(pilotId, button) {
-    button.classList.toggle('liked');
-    updateLikes(pilotId);
-    
-    const likesSpan = document.getElementById(`likes-${pilotId}`);
+// ============================================
+// LIKE FUNCTIONS - GLOBAL (FIREBASE)
+// ============================================
+
+// Get likes from Firebase or localStorage
+function getLikes(pilotId) {
+    if (firebaseReady) {
+        // Return from Firebase (synced globally)
+        const likes = JSON.parse(localStorage.getItem('pilotLikesGlobal')) || {};
+        return likes[pilotId] || 0;
+    } else {
+        // Fallback to localStorage
+        const likes = JSON.parse(localStorage.getItem('pilotLikes')) || {};
+        return likes[pilotId] || 0;
+    }
+}
+
+// Update likes in Firebase
+function updateLikes(pilotId) {
+    if (firebaseReady) {
+        // Get current count from Firebase
+        const likesRef = database.ref(`likes/pilot_${pilotId}`);
+        likesRef.once('value', (snapshot) => {
+            const currentLikes = snapshot.val() || 0;
+            const newLikes = currentLikes + 1;
+            
+            // Update in Firebase
+            likesRef.set(newLikes);
+            
+            // Update local cache
+            const likesCache = JSON.parse(localStorage.getItem('pilotLikesGlobal')) || {};
+            likesCache[pilotId] = newLikes;
+            localStorage.setItem('pilotLikesGlobal', JSON.stringify(likesCache));
+            
+            // Update UI
+            updateLikeDisplay(pilotId);
+        });
+    } else {
+        // Fallback to localStorage
+        const likes = JSON.parse(localStorage.getItem('pilotLikes')) || {};
+        likes[pilotId] = (likes[pilotId] || 0) + 1;
+        localStorage.setItem('pilotLikes', JSON.stringify(likes));
+    }
+}
+
+// Sync likes from Firebase to display
+function syncLikesWithFirebase() {
+    const likesRef = database.ref('likes');
+    likesRef.on('value', (snapshot) => {
+        const allLikes = snapshot.val() || {};
+        const likesCache = {};
+        
+        // Convert Firebase format to our format
+        Object.keys(allLikes).forEach(key => {
+            const pilotId = key.replace('pilot_', '');
+            likesCache[pilotId] = allLikes[key];
+        });
+        
+        // Cache in localStorage
+        localStorage.setItem('pilotLikesGlobal', JSON.stringify(likesCache));
+        
+        // Update all displays
+        Object.keys(likesCache).forEach(pilotId => {
+            updateLikeDisplay(pilotId);
+        });
+    });
+}
+
+// Update like count in UI
+function updateLikeDisplay(pilotId) {
+    const likesSpan = document.querySelector(`#likes-${pilotId} .like-count`);
     if (likesSpan) {
         likesSpan.textContent = getLikes(pilotId);
     }
 }
+
+// Check if user liked (personal preference, stored locally)
+function isLiked(pilotId) {
+    const liked = JSON.parse(localStorage.getItem('pilotLiked')) || {};
+    return liked[pilotId] || false;
+}
+
+// Load user's like preferences from localStorage
+function loadLikesFromStorage() {
+    const liked = JSON.parse(localStorage.getItem('pilotLiked')) || {};
+    Object.keys(liked).forEach(pilotId => {
+        const btn = document.querySelector(`button[onclick="toggleLike(${pilotId}, this)"]`);
+        if (btn && liked[pilotId]) {
+            btn.classList.add('liked');
+        }
+    });
+}
+
+// Toggle like and update storage
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('like-btn')) {
+        const onclick = e.target.getAttribute('onclick');
+        const pilotId = parseInt(onclick.match(/\d+/)[0]);
+        const liked = JSON.parse(localStorage.getItem('pilotLiked')) || {};
+        liked[pilotId] = !liked[pilotId];
+        localStorage.setItem('pilotLiked', JSON.stringify(liked));
+    }
+});
+
+// Like/Unlike toggle
+function toggleLike(pilotId, button) {
+    button.classList.toggle('liked');
+    updateLikes(pilotId);
+}
+
+// ============================================
+// STAR FUNCTIONS - LOCAL (USER PREFERENCES)
+// ============================================
 
 // Star/Unstar toggle
 function toggleStar(pilotId, button) {
@@ -202,56 +307,20 @@ function toggleStarDetail(pilotId) {
     alert('⭐ Notification enabled! You\'ll be notified when this pilot is released.');
 }
 
-// Local Storage Management for Likes
-function getLikes(pilotId) {
-    const likes = JSON.parse(localStorage.getItem('pilotLikes')) || {};
-    return likes[pilotId] || 0;
-}
-
-function updateLikes(pilotId) {
-    const likes = JSON.parse(localStorage.getItem('pilotLikes')) || {};
-    likes[pilotId] = (likes[pilotId] || 0) + 1;
-    localStorage.setItem('pilotLikes', JSON.stringify(likes));
-}
-
-function isLiked(pilotId) {
-    const liked = JSON.parse(localStorage.getItem('pilotLiked')) || {};
-    return liked[pilotId] || false;
-}
-
-function loadLikesFromStorage() {
-    const liked = JSON.parse(localStorage.getItem('pilotLiked')) || {};
-    Object.keys(liked).forEach(pilotId => {
-        const btn = document.querySelector(`button[onclick="toggleLike(${pilotId}, this)"]`);
-        if (btn && liked[pilotId]) {
-            btn.classList.add('liked');
-        }
-    });
-}
-
-// Toggle like state and update storage
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('like-btn')) {
-        const onclick = e.target.getAttribute('onclick');
-        const pilotId = parseInt(onclick.match(/\d+/)[0]);
-        const liked = JSON.parse(localStorage.getItem('pilotLiked')) || {};
-        liked[pilotId] = !liked[pilotId];
-        localStorage.setItem('pilotLiked', JSON.stringify(liked));
-    }
-});
-
-// Local Storage Management for Stars (Notifications)
+// Local Storage Management for Stars
 function isStarred(pilotId) {
     const starred = JSON.parse(localStorage.getItem('pilotStarred')) || {};
     return starred[pilotId] || false;
 }
 
+// Update stars in localStorage
 function updateStars(pilotId) {
     const starred = JSON.parse(localStorage.getItem('pilotStarred')) || {};
     starred[pilotId] = !starred[pilotId];
     localStorage.setItem('pilotStarred', JSON.stringify(starred));
 }
 
+// Load stars from localStorage
 function loadStarsFromStorage() {
     const starred = JSON.parse(localStorage.getItem('pilotStarred')) || {};
     Object.keys(starred).forEach(pilotId => {
@@ -264,9 +333,12 @@ function loadStarsFromStorage() {
     });
 }
 
-// Placeholder for pilots data loading
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+// Load pilots data from data.js
 function loadPilotsData() {
-    // This will be populated from data.js
     if (typeof pilots === 'undefined') {
         console.error('Pilots data not loaded. Make sure data.js is included.');
     }
