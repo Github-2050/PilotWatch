@@ -4,7 +4,7 @@
 // Your Firebase project credentials
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAzI9dhkrjKcaLGuBNFYrjRojB1iqxYIoA",
+    apiKey: "",
     authDomain: "pilotwatch-7afae.firebaseapp.com",
     databaseURL: "https://pilotwatch-7afae-default-rtdb.firebaseio.com",
     projectId: "pilotwatch-7afae",
