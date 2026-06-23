@@ -29,6 +29,13 @@ const pilots = [
         description: "The third pilot in the collection. Feel free to add your own pilots by copying the structure above and incrementing the ID. The like counter will track likes using the browser's local storage.",
         image: "https://via.placeholder.com/300x200?text=Pilot+3",
         videoThumbnail: "https://via.placeholder.com/1000x600?text=Pilot+3+Video"
+    },
+    {
+        id: 4,
+        title: "Example Pilot 4",
+        description: "The third pilot in the collection. Feel free to add your own pilots by copying the structure above and incrementing the ID. The like counter will track likes using the browser's local storage.",
+        image: "https://via.placeholder.com/300x200?text=Pilot+3",
+        videoThumbnail: "https://via.placeholder.com/1000x600?text=Pilot+3+Video"
     }
     // Add more pilots below following the same structure
     // {
