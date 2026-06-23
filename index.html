@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PilotWatch - Animated Pilots Showcase</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Hero Section with Random Pilot -->
+    <section class="hero" id="heroSection">
+        <div class="hero-container">
+            <h1>PilotWatch</h1>
+            <p class="subtitle">Discover Upcoming Animated Pilots</p>
+            <div class="featured-pilot" id="featuredPilot">
+                <!-- Randomized pilot will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Pilot List Section -->
+    <section class="pilots-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>All Pilots</h2>
+                <button class="btn btn-primary" onclick="openRequestModal()">🎬 Request a Pilot</button>
+            </div>
+            <div class="pilots-grid" id="pilotsGrid">
+                <!-- Pilots will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Request Modal -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRequestModal()">&times;</span>
+            <h2>Request a Pilot</h2>
+            <p class="modal-subtitle">Suggest an animated pilot to be added to PilotWatch</p>
+            
+            <form id="requestForm">
+                <div class="form-group">
+                    <label for="pilotTitle">Pilot Title *</label>
+                    <input type="text" id="pilotTitle" placeholder="Enter the pilot title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pilotStudio">Studio/Creator *</label>
+                    <input type="text" id="pilotStudio" placeholder="Studio or creator name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pilotDescription">Description *</label>
+                    <textarea id="pilotDescription" placeholder="Describe the pilot..." rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="pilotGenre">Genre(s)</label>
+                    <input type="text" id="pilotGenre" placeholder="e.g., Action, Comedy, Fantasy">
+                </div>
+
+                <div class="form-group">
+                    <label for="pilotLink">Link (IMDB, YouTube, etc.)</label>
+                    <input type="url" id="pilotLink" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label for="requesterName">Your Name/Handle</label>
+                    <input type="text" id="requesterName" placeholder="Your name (optional)">
+                </div>
+
+                <div class="form-group">
+                    <label for="requesterEmail">Your Email</label>
+                    <input type="email" id="requesterEmail" placeholder="your.email@example.com">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message">
+        ✓ Thank you! Your pilot request has been submitted successfully.
+    </div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
