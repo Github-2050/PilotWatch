@@ -1,59 +1,46 @@
 // ============================================
 // FIREBASE CONFIGURATION
 // ============================================
-// Replace these with your Firebase project credentials
-// Get these from: Firebase Console > Project Settings > General
-
-// STEP 1: Go to https://console.firebase.google.com/
-// STEP 2: Create a new project (or use existing)
-// STEP 3: Go to Project Settings
-// STEP 4: Copy your firebaseConfig below
+// Your Firebase project credentials
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAzI9dhkrjKcaLGuBNFYrjRojB1iqxYIoA",
+    authDomain: "pilotwatch-7afae.firebaseapp.com",
+    databaseURL: "https://pilotwatch-7afae-default-rtdb.firebaseio.com",
+    projectId: "pilotwatch-7afae",
+    storageBucket: "pilotwatch-7afae.firebasestorage.app",
+    messagingSenderId: "692572767486",
+    appId: "1:692572767486:web:548bf69cebb08a3ce0d1af"
 };
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-console.log('Firebase initialized successfully!');
+console.log('✅ Firebase initialized successfully! Global likes are now active.');
 
 // ============================================
-// HOW TO SET UP FIREBASE:
+// SET UP DATABASE RULES
 // ============================================
 /*
-1. Visit https://console.firebase.google.com/
-2. Click "Create a project" or select existing project
-3. Fill in project details
-4. Enable Realtime Database:
-   - Go to Build > Realtime Database
-   - Click "Create Database"
-   - Choose "Start in test mode" (for development)
-   - Click "Enable"
+IMPORTANT: Go to your Firebase Console and set these rules:
 
-5. Set Database Rules to:
-   {
-     "rules": {
-       "likes": {
-         ".read": true,
-         ".write": true
-       }
-     }
-   }
+1. Go to: https://console.firebase.google.com/
+2. Select your project "pilotwatch-7afae"
+3. Click: Build > Realtime Database
+4. Click: Rules tab at the top
+5. Replace all content with this:
 
-6. Get your config:
-   - Click Project Settings (gear icon)
-   - Scroll to "Your apps"
-   - Select the web app
-   - Copy the entire firebaseConfig object
-   - Paste it above, replacing the placeholder values
+{
+  "rules": {
+    "likes": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
 
-7. IMPORTANT: These credentials are public, it's OK!
-   The database rules control what can be accessed.
+6. Click "Publish"
+
+This allows anyone to read and write like counts (perfect for a public app).
 */
