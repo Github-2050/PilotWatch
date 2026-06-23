@@ -11,10 +11,10 @@
 const pilots = [
     {
         id: 1,
-        title: "Example Pilot 1",
+        title: "Pretty Pretty Please I Don't Want to be a Magical Girl!",
         description: "This is a sample pilot description. Replace this with your actual pilot information. You can add as much detail as you want here. This description will appear on both the main page and the detail page.",
-        image: "https://via.placeholder.com/300x200?text=Pilot+1",
-        videoThumbnail: "https://via.placeholder.com/1000x600?text=Pilot+1+Video"
+        image: "https://static.wikia.nocookie.net/idwtbamg/images/0/0a/PPPIDWTBAMG_PAThumb.png/revision/latest/scale-to-width-down/670?cb=20250308011849",
+        videoThumbnail: "https://www.youtube.com/watch?v=zf7bsmT-Jn0"
     },
     {
         id: 2,
