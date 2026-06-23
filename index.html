@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PilotWatch - Animated Pilots Showcase</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
 </head>
 <body>
     <!-- Hero Section with Random Pilot -->
@@ -38,40 +41,41 @@
             <h2>Request a Pilot</h2>
             <p class="modal-subtitle">Suggest an animated pilot to be added to PilotWatch</p>
             
-            <form id="requestForm">
+            <!-- Formspree Form -->
+            <form id="requestForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                 <div class="form-group">
                     <label for="pilotTitle">Pilot Title *</label>
-                    <input type="text" id="pilotTitle" placeholder="Enter the pilot title" required>
+                    <input type="text" id="pilotTitle" name="Pilot Title" placeholder="Enter the pilot title" required>
                 </div>
 
                 <div class="form-group">
                     <label for="pilotStudio">Studio/Creator *</label>
-                    <input type="text" id="pilotStudio" placeholder="Studio or creator name" required>
+                    <input type="text" id="pilotStudio" name="Studio/Creator" placeholder="Studio or creator name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="pilotDescription">Description *</label>
-                    <textarea id="pilotDescription" placeholder="Describe the pilot..." rows="4" required></textarea>
+                    <textarea id="pilotDescription" name="Description" placeholder="Describe the pilot..." rows="4" required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="pilotGenre">Genre(s)</label>
-                    <input type="text" id="pilotGenre" placeholder="e.g., Action, Comedy, Fantasy">
+                    <input type="text" id="pilotGenre" name="Genre" placeholder="e.g., Action, Comedy, Fantasy">
                 </div>
 
                 <div class="form-group">
                     <label for="pilotLink">Link (IMDB, YouTube, etc.)</label>
-                    <input type="url" id="pilotLink" placeholder="https://...">
+                    <input type="url" id="pilotLink" name="Link" placeholder="https://...">
                 </div>
 
                 <div class="form-group">
                     <label for="requesterName">Your Name/Handle</label>
-                    <input type="text" id="requesterName" placeholder="Your name (optional)">
+                    <input type="text" id="requesterName" name="Name/Handle" placeholder="Your name (optional)">
                 </div>
 
                 <div class="form-group">
-                    <label for="requesterEmail">Your Email</label>
-                    <input type="email" id="requesterEmail" placeholder="your.email@example.com">
+                    <label for="requesterEmail">Your Email *</label>
+                    <input type="email" id="requesterEmail" name="email" placeholder="your.email@example.com" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request</button>
@@ -85,6 +89,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="firebase-config.js"></script>
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
